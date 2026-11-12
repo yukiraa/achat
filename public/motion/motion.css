@@ -1,0 +1,30 @@
+/* Animated arrival styles (Curve, Accordion, Liquid). The cards keep the chat
+   template's look; this only places them. They move with transform/opacity from
+   motion/engine.js. */
+
+#motionHost {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  /* same chat size setting as the classic chat */
+  width: calc(100% / var(--chatzoom, 1));
+  height: calc(100% / var(--chatzoom, 1));
+  transform: scale(var(--chatzoom, 1));
+  transform-origin: left bottom;
+  pointer-events: none;
+  z-index: 2;
+}
+body[data-align='right'] #motionHost { left: auto; right: 0; transform-origin: right bottom; }
+.mx-stage { position: absolute; inset: 0; }
+.mx-back { position: absolute; left: 0; top: 0; overflow: visible; }
+.mx-actors { position: absolute; inset: 0; }
+.mx-3d .mx-actors { perspective: 1400px; }
+.mx-actor {
+  position: absolute !important;
+  left: 0;
+  top: 0;
+  margin: 0 !important;
+  width: max-content;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}

@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>achat</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Pixelify+Sans:wght@500;700&display=swap">
+  <link rel="icon" href="/static/achat-logo-64.png">
+  <link rel="stylesheet" href="/static/dock.css?v={{BAE_VERSION}}">
+</head>
+<body class="dock">
+  <header class="top">
+    <div class="brandrow">
+      <img class="brandlogo" src="/static/achat-logo.png" alt="">
+      <span class="brand">achat</span>
+      <div class="seg uiseg" role="radiogroup" aria-label="Control panel look" title="Light or dark look for this panel, the layout editor and the on-stream poll">
+        <button role="radio" data-ui="light">Light</button>
+        <button role="radio" data-ui="dark">Dark</button>
+      </div>
+      <div class="status" id="status" aria-label="Connection status">
+        <span data-p="youtube" title="YouTube">YT</span>
+        <span data-p="twitch" title="Twitch">TW</span>
+        <span data-p="tiktok" title="TikTok">TT</span>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Sections">
+      <button data-go="live">Live</button>
+      <button data-go="connect">Connect</button>
+      <button data-go="look">Style</button>
+      <button data-go="layout">Layout</button>
+      <button data-go="gif">GIFs</button>
+      <button data-go="custom">Custom GIFs</button>
+      <button data-go="poll">Polls</button>
+      <button data-go="clock">Clock</button>
+      <button data-go="mod">Settings</button>
+      <button data-go="log">Log</button>
+      <a href="/guide" target="_blank" rel="noopener">Guide</a>
+    </nav>
+  </header>
+  <div id="outdated" class="warnbox hidden"></div>
+  <div id="sizewarn" class="warnbox hidden"></div>
+  <div id="offline" class="offline hidden">achat isn't running. Double-click <b>start.bat</b> in the achat folder to start it; this panel reconnects by itself.</div>
+
+  <main>
+    <!-- CONNECT -->
+    <!-- LIVE: viewers and chat from every platform -->
+    <section data-panel="live" class="hidden">
+      <div class="warnbox hidden" id="lvOld">The achat app that's running is an older version, so no chat can show here. Close every achat window (check the taskbar for a minimized one), run start.bat again, then right-click this panel and choose Reload.</div>
+      <div class="livebar" aria-label="Viewers">
+        <div class="lv-total">
+          <span class="lv-live"><i class="lv-dot"></i>Live</span>
+          <b id="lvTotal">-</b>
+          <span class="lv-unit">viewers</span>
+        </div>
+        <div class="lv-plats">
+          <span class="lv-p" data-lv="youtube" title="YouTube viewers"><img src="/logos/youtube.png" alt="YouTube"><b>-</b></span>
+          <span class="lv-p" data-lv="twitch" title="Twitch viewers"><img src="/logos/twitch.png" alt="Twitch"><b>-</b></span>
+          <span class="lv-p" data-lv="tiktok" title="TikTok viewers"><img src="/logos/tiktok.png" alt="TikTok"><b>-</b></span>
+        </div>
+      </div>
+      <div class="lv-tools">
+        <div class="seg" role="radiogroup" aria-label="Show messages from">
+          <button role="radio" data-lvf="all">All</button>
+          <button role="radio" data-lvf="youtube">YT</button>
+          <button role="radio" data-lvf="twitch">TW</button>
+          <button role="radio" data-lvf="tiktok">TT</button>
+        </div>
+        <input type="search" id="lvSearch" placeholder="Search names or words" aria-label="Search chat" spellcheck="false">
+        <button class="small ghost" id="lvTest" title="Sends a pretend viewer message through the real chat pipeline">Send test message</button>
+      </div>
+      <div class="lv-chatwrap">
+        <ol class="lv-list" id="lvList" data-filter="all" aria-label="Live chat"></ol>
+        <p class="lv-empty" id="lvEmpty">No chat yet. Messages from YouTube, Twitch and TikTok show up here as they arrive.</p>
+        <button class="lv-new hidden" id="lvNew">New messages</button>
+      </div>
+      <p class="sub">Point at a message for actions: <b>Hide</b> removes it from the stream, <b>Block</b> stops that viewer using !gif, custom commands and votes, <b>Feature</b> pins it on stream (for how long is set below). Colored edges mark Super Chats, mods, members and messages that mention you.</p>
+      <label>Featured message stays on stream, seconds <output data-out="featured.seconds"></output>
+        <input type="range" min="0" max="120" step="5" data-k="featured.seconds"></label>
+      <p class="sub">0 keeps it up until you press Unfeature.</p>
+      <label>Where featured messages appear</label>
+      <div class="seg" role="radiogroup" aria-label="Where featured messages appear">
+        <button role="radio" data-featloc="chat">Top of chat</button>
+        <button role="radio" data-featloc="layout">Layout box</button>
+      </div>
+      <p class="sub">Top of chat: pinned above chat, at chat's size. Layout box: in its own Featured box that you move and resize below (Everything source; the Chat only source keeps it at the top of chat).</p>
+      <div data-mini="featured"></div>
+    </section>
+
+    <section data-panel="connect">
+      <div class="platform">
+        <h2>YouTube</h2>
+        <label>Channel @handle, channel ID, or video link
+          <input type="text" data-k="connections.youtube.target" placeholder="@yourchannel" spellcheck="false"></label>
+        <p class="sub" data-status="youtube"></p>
+        <div class="row wrap" data-conn="youtube"></div>
+        <details class="apibox">
+          <summary>Official YouTube Data API (optional)</summary>
+          <p class="sub">By default achat reads chat the way youtube.com's own chat window does, with no key. If you'd rather use Google's official API, create an API key with "YouTube Data API v3" enabled at console.cloud.google.com and paste it here. A free key has 10,000 quota units a day and each chat check costs 5, so the default of one check every 8 seconds covers about 4.5 hours of streaming a day. When the quota runs out, achat switches back to the default method by itself.</p>
+          <label class="check"><input type="checkbox" data-k="connections.youtube.useApi"> Read YouTube chat with the official API</label>
+          <label>API key
+            <input type="password" data-secret="connections.youtube.apiKey" placeholder="not set" autocomplete="off"></label>
+          <label>Check chat every (seconds)
+            <input type="number" min="3" max="60" step="1" data-k="connections.youtube.apiInterval"></label>
+        </details>
+      </div>
+      <div class="platform">
+        <h2>Twitch</h2>
+        <label>Channel name
+          <input type="text" data-k="connections.twitch.channel" placeholder="yourchannel" spellcheck="false"></label>
+        <p class="sub" data-status="twitch"></p>
+        <div class="row wrap" data-conn="twitch"></div>
+      </div>
+      <div class="platform">
+        <h2>TikTok</h2>
+        <label>Username
+          <input type="text" data-k="connections.tiktok.username" placeholder="@yourname" spellcheck="false"></label>
+        <label>Euler Stream sign key (optional, raises limits)
+          <input type="password" data-secret="connections.tiktok.signKey" placeholder="not set" autocomplete="off"></label>
+        <p class="sub" data-status="tiktok"></p>
+        <div class="row wrap" data-conn="tiktok"></div>
+      </div>
+      <h2 class="gap">Overlay links for OBS</h2>
+      <p class="sub">"Everything" is one Browser Source whose parts you arrange in Layout. The other links show a single part if you'd rather place sources yourself.</p>
+      <div class="links" id="links"></div>
+    </section>
+
+    <!-- LOOK -->
+    <section data-panel="look" class="hidden">
+      <h2>Chat look</h2>
+      <p class="sub">Pick a ready-made template, or style chat yourself with Custom CSS. Only one can be active at a time.</p>
+      <div class="seg" role="radiogroup" aria-label="Chat look">
+        <button role="radio" data-look="template">Template</button>
+        <button role="radio" data-look="custom">Custom CSS</button>
+      </div>
+
+      <div id="templateBox">
+        <label>Template</label>
+        <div class="lookpick" id="templatePick" role="radiogroup" aria-label="Chat template"></div>
+      </div>
+      <p class="lockednote hidden" id="templateLocked">Templates are unavailable while Custom CSS is on. Switch to Template above to use one again.</p>
+
+      <div id="customBox">
+        <p class="sub">Chat is built with the same structure as YouTube's chat page, so CSS made for YouTube live chat (like most VTuber chat themes) works here, for YouTube, Twitch and TikTok messages alike. Useful targets: <code>yt-live-chat-text-message-renderer</code>, <code>#author-name</code>, <code>#message</code>, <code>[author-type="member"]</code>, <code>.platform-youtube</code>.</p>
+        <div class="row wrap">
+          <select id="cssPreset" aria-label="CSS preset" class="grow"></select>
+          <button class="small ghost" id="cssNew">New</button>
+          <button class="small ghost" id="cssRename">Rename</button>
+          <button class="small warn" id="cssDelete">Delete</button>
+        </div>
+        <p class="sub">New to Custom CSS? Press "Start from the starter" for a working example with notes, or read CUSTOM-CSS-GUIDE in the achat folder.</p>
+        <textarea id="cssText" rows="12" spellcheck="false" placeholder="Paste your chat CSS here, then press Save"></textarea>
+        <div class="row wrap">
+          <button id="cssSave">Save and apply</button>
+          <label class="filebtn">Load .css file<input type="file" id="cssFile" accept=".css,text/css" hidden></label>
+          <button class="ghost" id="cssStarter">Start from the starter</button>
+          <span class="sub" id="cssMsg"></span>
+        </div>
+        <p class="sub">Presets are stored on this PC. Files up to 3 MB are fine, including CSS with images built in.</p>
+      </div>
+      <p class="lockednote hidden" id="customLocked">Custom CSS is unavailable while a template is on. Switch to Custom CSS above to use it.</p>
+
+      <p class="lockednote hidden" id="customOnlyNote">Custom CSS is on, so your CSS decides how chat looks: size, colors, position and animation. Only the edge fade and chat size below still apply. The other template settings are switched off. Switch to Template above to use them again.</p>
+      <div id="fadeSection">
+      <h2 class="gap">Edge fade</h2>
+      <label>Top fade, px <output data-out="chat.fadeTop"></output>
+        <input type="range" min="0" max="400" step="5" data-k="chat.fadeTop"></label>
+      <label>Bottom fade, px <output data-out="chat.fadeBottom"></output>
+        <input type="range" min="0" max="400" step="5" data-k="chat.fadeBottom"></label>
+      <label>Fade strength, % <output data-out="chat.fadeStrength"></output>
+        <input type="range" min="0" max="100" step="5" data-k="chat.fadeStrength"></label>
+      </div>
+      <div id="zoomSection">
+        <h2 class="gap">Chat size</h2>
+        <label>Chat size, % <output data-out="chat.zoom"></output>
+          <input type="range" min="30" max="200" step="5" data-k="chat.zoom"></label>
+        <p class="sub">Scales the whole chat, whatever the look, including Custom CSS. Use this when chat is too big or too small for its box.</p>
+        <label class="check"><input type="checkbox" data-k="chat.scaleWithBox"> Change chat size when I resize the Chat box</label>
+        <p class="sub">On: making the Chat box twice as wide (in Layout or Position on stream below) makes chat twice as big. Moving the box never changes the size.</p>
+      </div>
+      <div data-mini="chat"></div>
+      <div id="styleRest">
+      <div id="colorSection">
+        <h2 class="gap">Colors</h2>
+        <label class="check"><input type="checkbox" data-k="chat.useThemeColors"> Use Default's own colors</label>
+        <div id="colorbox">
+          <div class="row">
+            <label class="color">Card background <input type="color" data-k="chat.bgColor"></label>
+            <label class="color">Border <input type="color" data-k="chat.borderColor"></label>
+          </div>
+          <p class="sub">Text switches to light automatically on dark backgrounds.</p>
+        </div>
+        <label>Card background opacity, % <output data-out="chat.bgOpacity"></output>
+          <input type="range" min="0" max="100" step="5" data-k="chat.bgOpacity"></label>
+      </div>
+
+      <h2 class="gap">Animation</h2>
+      <div id="animSection">
+      <label>How new messages arrive
+        <select data-k="chat.animMode">
+          <option value="slideUp">Slide up (default)</option>
+          <option value="bubble">Speech bubble (puffs out of the avatar, random side)</option>
+          <option value="fadeSlide">Fade and slide</option>
+          <option value="cloud">Cloud (soft blurred puff)</option>
+          <option value="pop">Pop</option>
+          <option value="slideLeft">Slide in from the left</option>
+          <option value="slideRight">Slide in from the right</option>
+          <option value="curve">Curve (chat bends into an arc)</option>
+          <option value="accordion">Accordion (older messages fold up)</option>
+          <option value="liquid">Liquid (drips in, gooey)</option>
+        </select></label>
+      <label>Speed, ms (lower is faster) <output data-out="chat.animMs"></output>
+        <input type="range" min="150" max="1500" step="50" data-k="chat.animMs"></label>
+      <label>Pause after each message lands, ms <output data-out="chat.stagger"></output>
+        <input type="range" min="0" max="1000" step="25" data-k="chat.stagger"></label>
+      <label>Reading pause when chat is busy, ms <output data-out="chat.busyHold"></output>
+        <input type="range" min="0" max="2000" step="50" data-k="chat.busyHold"></label>
+      <p class="sub">Messages arrive one at a time. When chat is fast, each one stays still for the reading pause.</p>
+      </div>
+
+      <h2 class="gap">Size and position</h2>
+      <label>Chat side
+        <select data-k="chat.align">
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+        </select></label>
+      <div id="sizeBox">
+        <label>Card max width before text wraps, px <output data-out="chat.cardMaxWidth"></output>
+          <input type="range" min="150" max="1600" step="10" data-k="chat.cardMaxWidth"></label>
+        <label>Text size <output data-out="chat.fontSize"></output>
+          <input type="range" min="11" max="32" data-k="chat.fontSize"></label>
+      </div>
+      <label>Messages on screen <output data-out="chat.maxMessages"></output>
+        <input type="range" min="1" max="30" data-k="chat.maxMessages"></label>
+      <label>Hide messages after, seconds (0 keeps them) <output data-out="chat.hideAfter"></output>
+        <input type="range" min="0" max="120" data-k="chat.hideAfter"></label>
+      <label>Chat width on the "Chat only" source, px <output data-out="chat.columnWidth"></output>
+        <input type="range" min="200" max="1600" step="10" data-k="chat.columnWidth"></label>
+
+      <h2 class="gap">Platform logo</h2>
+      <div class="row between"><span class="lbl">Show the platform logo</span><label class="switch"><input type="checkbox" data-k="chat.showLogo" aria-label="Show platform logo"><i></i></label></div>
+      <div id="logobox">
+        <label>Where
+          <select data-k="chat.logoPos">
+            <option value="avatar">On the avatar, bottom-right</option>
+            <option value="card">Card's top-right corner</option>
+          </select></label>
+        <ul class="clist" id="logolist"></ul>
+        <p class="sub">Replace a logo with your own image, or reset it to the default.</p>
+      </div>
+      <div class="row between"><span class="lbl">Small colored dot on the avatar</span><label class="switch"><input type="checkbox" data-k="chat.showDot" aria-label="Show dot"><i></i></label></div>
+      </div>
+    </section>
+
+    <!-- LAYOUT -->
+    <section data-panel="layout" class="hidden" id="layoutPanel">
+      <div class="warnbox hidden" id="layoutWarn"></div>
+      <p class="sub">Arrange chat, GIFs, polls and the clock (switch it on in the Clock tab) on the "Everything" Browser Source. Set that source in OBS to <b data-ed="canvasNote">1920x1080</b>.</p>
+      <div class="row wrap">
+        <a class="btn" id="bigEditor" href="#" target="_blank" rel="noopener">Open the full-screen editor</a>
+        <button class="small ghost" id="copyEditor">Copy its link</button>
+      </div>
+      <div class="toolbar">
+        <select data-ed="preset" aria-label="Canvas size">
+          <option value="1920x1080">1920x1080 landscape</option>
+          <option value="1280x720">1280x720 landscape</option>
+          <option value="2560x1440">2560x1440 landscape</option>
+          <option value="1080x1920">1080x1920 vertical (TikTok)</option>
+        </select>
+        <span class="lbl">Snap grid</span>
+        <div class="stepper" aria-label="Snap grid spacing">
+          <button class="small ghost" data-ed="gridMinus" aria-label="Smaller grid">-</button>
+          <span data-ed="gridVal">20px</span>
+          <button class="small ghost" data-ed="gridPlus" aria-label="Bigger grid">+</button>
+        </div>
+        <label class="check tight"><input type="checkbox" data-ed="snap"> Snap</label>
+      </div>
+      <div class="stage" data-ed="stage"></div>
+      <div class="selected">
+        <div class="row between">
+          <b data-ed="selName">Chat</b>
+          <div class="row">
+            <label class="check tight"><input type="checkbox" data-ed="selVisible"> Show</label>
+            <label class="check tight"><input type="checkbox" data-ed="selLocked"> Lock</label>
+          </div>
+        </div>
+        <div class="nums">
+          <label>X <input type="number" data-ed="selX"></label>
+          <label>Y <input type="number" data-ed="selY"></label>
+          <label>W <input type="number" data-ed="selW"></label>
+          <label>H <input type="number" data-ed="selH"></label>
+        </div>
+      </div>
+      <p class="sub">Drag a box to move it, drag any corner or side to resize it. Snap grid is the spacing boxes jump to while you drag (not a zoom). Arrow keys nudge the selected box by one grid step, Shift for five.</p>
+      <button class="ghost small" data-ed="reset">Reset layout</button>
+    </section>
+
+    <!-- GIF -->
+    <section data-panel="gif" class="hidden">
+      <div class="row between"><h2>GIFs</h2><label class="switch"><input type="checkbox" data-k="gif.enabled" aria-label="GIFs on"><i></i></label></div>
+      <p class="sub" id="gifOffNote">When GIFs are off, <code>!gif</code>, your own GIF commands and GIF tests all do nothing.</p>
+      <div id="gifSettings">
+        <label>Where GIFs appear</label>
+        <div class="seg" role="radiogroup" aria-label="Where GIFs appear">
+          <button role="radio" data-gifloc="chat">Chat</button>
+          <button role="radio" data-gifloc="layout">Layout box</button>
+        </div>
+        <p class="sub">Chat: the GIF appears as a message and scrolls with chat. Layout box: the GIF shows in the GIFs box you place in Layout (needs the "Everything" source).</p>
+        <div class="warnbox hidden" id="gifwarn"></div>
+        <label>GIF size in chat, px <output data-out="gif.chatSize"></output>
+          <input type="range" min="60" max="600" step="10" data-k="gif.chatSize"></label>
+        <p class="sub">Height of GIFs shown inside chat. GIFs in the Layout box follow the size of that box.</p>
+        <div data-mini="gif"></div>
+        <p class="sub">Viewers type <code>!gif happy cat</code>. Try it yourself with the Test button, bottom right.</p>
+      <h2 class="gap">Search settings</h2>
+      <label>GIF search provider
+        <select data-k="gif.provider">
+          <option value="klipy">KLIPY (free, unlimited with a production key)</option>
+          <option value="giphy">GIPHY (free key: 100 searches an hour)</option>
+        </select></label>
+      <div data-prov="klipy">
+        <label>KLIPY API key (partner.klipy.com, API Keys page)
+          <input type="password" data-secret="gif.klipyKey" placeholder="not set" autocomplete="off"></label>
+        <p class="sub">A new KLIPY key is a test key (100 searches an hour). In the KLIPY dashboard, use "Request Production" on the key for unlimited searches, then set the limit below to 0. Leave KLIPY ads off; achat also skips ad slots so none reach your stream.</p>
+      </div>
+      <div data-prov="giphy">
+        <label>GIPHY API key (developers.giphy.com)
+          <input type="password" data-secret="gif.giphyKey" placeholder="not set" autocomplete="off"></label>
+      </div>
+      <label>Content rating
+        <select data-k="gif.rating">
+          <option value="g">G (strictest, recommended)</option>
+          <option value="pg">PG</option>
+        </select></label>
+      <label>Cooldown for everyone, seconds <output data-out="gif.globalCooldown"></output>
+        <input type="range" min="5" max="300" data-k="gif.globalCooldown"></label>
+      <label>Cooldown per viewer, seconds <output data-out="gif.userCooldown"></output>
+        <input type="range" min="5" max="600" data-k="gif.userCooldown"></label>
+      <label>Show each GIF for, seconds <output data-out="gif.displaySeconds"></output>
+        <input type="range" min="3" max="30" data-k="gif.displaySeconds"></label>
+      <label>Searches per hour limit (0 = no limit) <output data-out="gif.hourlyBudget"></output>
+        <input type="range" min="0" max="100" data-k="gif.hourlyBudget"></label>
+      <p class="sub">Keep this under 100 on test keys. Set it to 0 only with an unlimited production key. Repeat searches are cached and don't count.</p>
+      <label>Blocked words, one per line
+        <textarea rows="6" data-list="gif.blockedWords" spellcheck="false"></textarea></label>
+      <div class="nowbox" id="gifnow">No GIF on screen</div>
+      <div class="nowbox" id="gifmsg">The result of the last GIF request shows here</div>
+      <div class="row wrap">
+        <button data-act="gif:skip" class="warn">Remove last GIF</button>
+        <button data-act="gif:clear" class="ghost">Clear queue</button>
+      </div>
+      </div>
+    </section>
+
+    <!-- CUSTOM -->
+    <section data-panel="custom" class="hidden">
+      <div class="row between"><h2>Your own GIFs</h2><label class="switch"><input type="checkbox" data-k="custom.enabled" aria-label="Custom GIFs on"><i></i></label></div>
+      <p class="sub">Upload a GIF or image and give it a command. Viewers type the command, like <code>!x03</code>, and it shows wherever GIFs show. Same cooldowns as <code>!gif</code>, no search limit used.</p>
+      <div class="addbox">
+        <label>Command
+          <input type="text" id="ccmd" placeholder="x03" maxlength="21" spellcheck="false"></label>
+        <label>File (GIF, PNG, WEBP or JPG, up to 8 MB)
+          <input type="file" id="cfile" accept="image/gif,image/png,image/webp,image/jpeg"></label>
+        <div class="row"><button id="cadd">Add command</button><span class="sub" id="cmsg"></span></div>
+      </div>
+      <ul class="clist" id="clist"></ul>
+    </section>
+
+    <!-- CLOCK -->
+    <section data-panel="clock" class="hidden">
+      <div class="row between"><h2>Clock</h2><label class="switch"><input type="checkbox" data-k="clock.enabled" aria-label="Clock on"><i></i></label></div>
+      <p class="sub">Shows your PC's time on stream. Turn it on above, then place it below. The clock grows or shrinks to fill its box.</p>
+      <div data-mini="clock"></div>
+      <h2 class="gap">Look</h2>
+      <div class="lookpick" id="clockLook" role="radiogroup" aria-label="Clock look"></div>
+      <p class="sub">"Match chat template" follows the look you picked in Style (with Custom CSS on, it uses Plain). A template picked here is only for the clock, so chat and clock can look different.</p>
+      <h2 class="gap">What it shows</h2>
+      <label class="check"><input type="checkbox" data-k="clock.seconds"> Show seconds</label>
+      <label class="check"><input type="checkbox" data-k="clock.date"> Show the date</label>
+      <label class="check"><input type="checkbox" data-k="clock.hour12"> 12-hour time (2:05 PM)</label>
+      <label>Date format</label>
+      <div class="seg" role="radiogroup" aria-label="Date format">
+        <button role="radio" data-clockdate="long">Tuesday, 29 September 2026</button>
+        <button role="radio" data-clockdate="short">Tue 29 Sep</button>
+        <button role="radio" data-clockdate="numeric">29/09/2026</button>
+      </div>
+      <p class="sub">Want the clock as its own OBS source instead? Use the "Clock only" link in Connect.</p>
+    </section>
+
+    <!-- POLL -->
+    <section data-panel="poll" class="hidden">
+      <div class="row between"><h2>Chat polls</h2><label class="switch"><input type="checkbox" data-k="poll.enabled" aria-label="Polls on"><i></i></label></div>
+      <p class="sub">Viewers vote with the commands below, from any platform. One vote each; voting again changes it. <code>!vote 1</code> with a space always works too.</p>
+      <label>Where the poll appears</label>
+      <div class="seg" role="radiogroup" aria-label="Where the poll appears">
+        <button role="radio" data-pollloc="chat">Top of chat</button>
+        <button role="radio" data-pollloc="layout">Layout box</button>
+      </div>
+      <div class="warnbox hidden" id="pollwarn"></div>
+      <div data-mini="poll"></div>
+      <label>Question
+        <input type="text" id="pollQ" maxlength="120" placeholder="What should we play next?"></label>
+      <label>Options, one per line (2 to 6)
+        <textarea id="pollOpts" rows="4" spellcheck="false" placeholder="Horror game&#10;Cozy farm game"></textarea></label>
+      <label>Length, seconds <output id="pollSecOut">60</output>
+        <input type="range" id="pollSec" min="10" max="600" step="10" value="60"></label>
+      <div class="row wrap">
+        <button id="pollStart">Start poll</button>
+        <button id="pollEnd" class="warn">End now</button>
+        <button id="pollClear" class="ghost">Hide</button>
+      </div>
+      <p class="sub testmsg" id="pollMsg"></p>
+      <div class="nowbox" id="pollNow">No poll running</div>
+      <h2 class="gap">Vote commands</h2>
+      <p class="sub">Each option's command. For example <code>!yes</code> and <code>!no</code>. Use ! then letters, numbers or _, no spaces, all different.</p>
+      <div class="cmdgrid" id="pollCmds"></div>
+      <div class="row wrap"><button id="pollCmdSave">Save commands</button><button class="small ghost" id="pollCmdReset">Back to !vote1 to !vote6</button></div>
+      <p class="sub" id="pollCmdMsg"></p>
+      <h2 class="gap">Settings</h2>
+      <label>Keep results on screen after the end, seconds <output data-out="poll.resultSeconds"></output>
+        <input type="range" min="3" max="60" data-k="poll.resultSeconds"></label>
+      <label>Length of polls your mods start from chat, seconds <output data-out="poll.defaultSeconds"></output>
+        <input type="range" min="10" max="600" step="10" data-k="poll.defaultSeconds"></label>
+      <p class="sub">Mods can type <code>!poll Question | Option A | Option B</code> to start one and <code>!endpoll</code> to close it.</p>
+    </section>
+
+    <!-- MOD -->
+    <section data-panel="mod" class="hidden">
+      <h2>Blocked from commands</h2>
+      <p class="sub">Names here can still chat but can't use !gif, custom commands or !vote. One per line.</p>
+      <textarea rows="8" data-list="bannedUsers" spellcheck="false"></textarea>
+      <h2 class="gap">Chat commands for mods</h2>
+      <p class="sub">Your channel mods and you can type <code>!skipgif</code>, <code>!poll Question | A | B</code> and <code>!endpoll</code> in chat.</p>
+      <h2 class="gap">Chat filters</h2>
+      <label class="check"><input type="checkbox" data-k="chat.hideCommands"> Hide !commands from chat</label>
+      <label>Ignored accounts (bots), one per line
+        <textarea rows="4" data-list="chat.ignoredUsers" spellcheck="false"></textarea></label>
+
+
+      <h2 class="gap">Privacy</h2>
+      <label class="check"><input type="checkbox" data-k="ui.blurPrivate"> Blur private info (the overlay links in Connect)</label>
+      <p class="sub">Handy if this panel is ever on screen or in a screenshot. Press <b>Show</b> next to a link to see it for 10 seconds; Copy and Open work while it's blurred.</p>
+      <h2 class="gap">Stop achat</h2>
+      <p class="sub">achat runs in the background, so there's no window to close. Stop it here (or with stop.bat). To start it again, double-click start.bat.</p>
+      <div class="row"><button class="warn" id="appStop">Stop achat</button></div>
+    </section>
+
+    <!-- LOG -->
+    <section data-panel="log" class="hidden">
+      <pre id="log"></pre>
+    </section>
+  </main>
+  <!-- Floating test tool, on every tab -->
+  <div class="testdock" id="testdock">
+    <div class="testpanel hidden" id="testpanel" role="dialog" aria-label="Test">
+      <div class="row between"><b>Test</b><button class="small ghost xbtn" id="testClose" aria-label="Close test panel">X</button></div>
+      <select id="testWhat" aria-label="What to test">
+        <option value="chat">Chat message</option>
+        <option value="type">Type like a viewer (GIFs, commands)</option>
+        <option value="burst">5 messages at once</option>
+        <option value="spam">Spam: 40 fast messages</option>
+        <option value="superchat">Super Chat</option>
+        <option value="poll">Poll with votes</option>
+      </select>
+      <label id="testTypeBox">What the viewer types
+        <input type="text" id="testText" value="sample" spellcheck="false" placeholder="!gif happy cat"></label>
+      <p class="sub" id="testHint">Try <code>sample</code> (built-in GIF), <code>!gif happy cat</code> or one of your commands.</p>
+      <div class="row"><button id="testRun" class="grow">Run test</button><button id="testClear" class="ghost">Clear chat</button></div>
+      <p class="sub testmsg" id="testResult"></p>
+      <p class="sub" id="testDetail"></p>
+    </div>
+    <button class="testfab" id="testOpen" aria-expanded="false" aria-controls="testpanel">Test</button>
+  </div>
+  <script src="/static/editor.js?v={{BAE_VERSION}}"></script>
+  <script src="/static/dock.js?v={{BAE_VERSION}}"></script>
+</body>
+</html>

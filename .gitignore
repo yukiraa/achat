@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# runtime data: holds API keys and the private dock token. NEVER commit.
+data/*
+!data/.keep
+
+# secrets / env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# logs, pids, temp
+*.log
+*.pid
+*.tmp
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# tool state
+.omc/

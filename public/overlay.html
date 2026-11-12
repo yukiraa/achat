@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>achat overlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Archivo:wght@600;700;800&family=Pixelify+Sans:wght@700&family=Nunito:wght@600;700;800&family=Fredoka:wght@500;600&family=Itim&display=swap">
+  <link rel="stylesheet" href="/static/overlay.css?v={{BAE_VERSION}}">
+  <link rel="stylesheet" href="/static/motion/motion.css?v={{BAE_VERSION}}">
+  <link rel="stylesheet" id="usercss" href="/user.css">
+</head>
+<body data-theme="clean" data-align="left">
+  <!-- The chat wrappers use YouTube's own element names so that chat CSS written
+       for YouTube (Custom CSS theme) works here too, for every platform. -->
+  <!-- The "Everything" source renders at the canvas size (e.g. 1920x1080) and is
+       scaled as one picture to fit the OBS source, so pixel sizes never change. -->
+  <div id="canvas">
+  <section id="chatLayer" class="layer layer-chat">
+    <yt-live-chat-renderer>
+      <yt-live-chat-item-list-renderer>
+        <div id="item-scroller">
+          <div id="items" class="stack" aria-live="polite"></div>
+        </div>
+      </yt-live-chat-item-list-renderer>
+    </yt-live-chat-renderer>
+  </section>
+  <section id="gif" class="layer layer-gif"></section>
+  <section id="poll" class="layer layer-poll"></section>
+  <section id="clock" class="layer layer-clock hidden"></section>
+  <section id="featured" class="layer layer-featured"></section>
+  </div>
+  <script src="/static/overlay.js?v={{BAE_VERSION}}"></script>
+  <!-- Curve, Accordion and Liquid arrivals (dock: Style > Animation) -->
+  <script type="module" src="/static/motion/bridge.js?v={{BAE_VERSION}}"></script>
+</body>
+</html>

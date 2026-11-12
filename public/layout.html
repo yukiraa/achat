@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>achat layout editor</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Pixelify+Sans:wght@500;700&display=swap">
+  <link rel="icon" href="/static/achat-logo-64.png">
+  <link rel="stylesheet" href="/static/dock.css?v={{BAE_VERSION}}">
+  <link rel="stylesheet" href="/static/layout.css?v={{BAE_VERSION}}">
+</head>
+<body>
+  <div class="editor" id="editorRoot">
+    <header class="bar">
+      <img class="brandlogo" src="/static/achat-logo.png" alt="">
+      <span class="brand">Layout editor</span>
+      <select data-ed="preset" aria-label="Canvas size">
+        <option value="1920x1080">1920x1080 landscape</option>
+        <option value="1280x720">1280x720 landscape</option>
+        <option value="2560x1440">2560x1440 landscape</option>
+        <option value="1080x1920">1080x1920 vertical (TikTok)</option>
+      </select>
+      <span class="lbl">Snap grid</span>
+      <div class="stepper" aria-label="Snap grid spacing">
+        <button class="small ghost" data-ed="gridMinus" aria-label="Smaller grid">-</button>
+        <span data-ed="gridVal">20px</span>
+        <button class="small ghost" data-ed="gridPlus" aria-label="Bigger grid">+</button>
+      </div>
+      <label class="check tight"><input type="checkbox" data-ed="snap"> Snap</label>
+      <label class="check tight"><input type="checkbox" id="showPreview" checked> Live preview</label>
+      <span class="spacer"></span>
+      <button class="small warn" data-ed="reset">Reset</button>
+    </header>
+
+    <div id="offline" class="warnbox hidden">Can't reach achat. Is the app window still open?</div>
+
+    <main class="work">
+      <div class="stagewrap">
+        <div class="stage" data-ed="stage">
+          <iframe id="preview" title="Live overlay preview" tabindex="-1"></iframe>
+        </div>
+      </div>
+      <aside class="selected inspector">
+        <b data-ed="selName">Chat</b>
+        <div class="nums">
+          <label>X <input type="number" data-ed="selX"></label>
+          <label>Y <input type="number" data-ed="selY"></label>
+          <label>W <input type="number" data-ed="selW"></label>
+          <label>H <input type="number" data-ed="selH"></label>
+        </div>
+        <label class="check"><input type="checkbox" data-ed="selVisible"> Show on stream</label>
+        <label class="check"><input type="checkbox" data-ed="selLocked"> Lock in place</label>
+        <p class="sub">Canvas <b data-ed="canvasNote">1920x1080</b>. Set your "Everything" Browser Source in OBS to the same size.</p>
+        <p class="sub">Use the Test button (bottom right) to fill the preview. Drag a box to move it. Drag any corner or side to resize it. Arrow keys nudge, Shift nudges five steps. Changes go live on stream as you let go.</p>
+      </aside>
+    </main>
+  </div>
+  <div class="testdock">
+    <div class="testpanel hidden" id="testpanel" role="dialog" aria-label="Test">
+      <div class="row between"><b>Test</b><button class="small ghost xbtn" id="testClose" aria-label="Close test panel">X</button></div>
+      <select id="testWhat" aria-label="What to test">
+        <option value="chat">Chat message</option>
+        <option value="type">Type like a viewer (GIFs, commands)</option>
+        <option value="burst">5 messages at once</option>
+        <option value="spam">Spam: 40 fast messages</option>
+        <option value="superchat">Super Chat</option>
+        <option value="poll">Poll with votes</option>
+      </select>
+      <label id="testTypeBox">What the viewer types
+        <input type="text" id="testText" value="sample" spellcheck="false" placeholder="!gif happy cat"></label>
+      <div class="row"><button id="testRun" class="grow">Run test</button><button id="testClear" class="ghost">Clear chat</button></div>
+      <p class="sub testmsg" id="testResult"></p>
+      <p class="sub" id="testDetail"></p>
+    </div>
+    <button class="testfab" id="testOpen" aria-expanded="false">Test</button>
+  </div>
+  <script src="/static/editor.js?v={{BAE_VERSION}}"></script>
+  <script src="/static/layout.js?v={{BAE_VERSION}}"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+/* =====================================================================
+   achat  |  Custom CSS starter
+   A working example with notes. Change the values in part 1 first;
+   that's all most people need. Everything else is optional.
+   Full explanation: CUSTOM-CSS-GUIDE.md in your achat folder.
+   ===================================================================== */
+
+/* Fonts from Google Fonts load fine (other @import links are blocked). */
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&display=swap");
+
+/* ---------------------------------------------------------------------
+   1. EASY SETTINGS: change these first
+   --------------------------------------------------------------------- */
+:root {
+  --chat-font: "Nunito", "Segoe UI", sans-serif;
+  --text-size: 20px;          /* message text */
+  --name-size: 15px;          /* viewer names */
+  --avatar-size: 36px;        /* profile pictures */
+  --bubble-bg: rgba(255, 255, 255, 0.92);
+  --bubble-text: #1c2233;
+  --bubble-radius: 16px;
+  --bubble-max-width: 420px;  /* long messages wrap at this width */
+  --gap: 10px;                /* space between messages */
+
+  --name-color: #1f3cff;      /* normal viewers */
+  --member-color: #12a150;    /* members / subscribers */
+  --mod-color: #ff6a13;       /* moderators */
+  --owner-color: #c79200;     /* you */
+}
+
+/* ---------------------------------------------------------------------
+   2. THE WHOLE CHAT AREA
+   Chat fills the whole Browser Source, newest message at the bottom.
+   --------------------------------------------------------------------- */
+yt-live-chat-renderer {
+  font-family: var(--chat-font);
+}
+#items {
+  padding: 16px 16px 12px !important;
+}
+
+/* ---------------------------------------------------------------------
+   3. ONE MESSAGE  (the same for YouTube, Twitch and TikTok)
+   --------------------------------------------------------------------- */
+yt-live-chat-text-message-renderer {
+  padding: 0 !important;
+  margin-bottom: var(--gap);
+  align-items: flex-end;                 /* avatar sits at the bubble's bottom */
+  animation: bae-pop 0.35s ease-out both; /* see part 6 */
+}
+
+/* profile picture */
+yt-live-chat-text-message-renderer #author-photo {
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  margin-right: 10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* the bubble around name + message */
+yt-live-chat-text-message-renderer #content {
+  max-width: var(--bubble-max-width);
+  padding: 8px 14px 10px;
+  background: var(--bubble-bg);
+  color: var(--bubble-text);
+  border-radius: var(--bubble-radius);
+  border-bottom-left-radius: 4px;        /* speech-bubble corner by the avatar */
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+/* name row */
+yt-live-chat-author-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+yt-live-chat-text-message-renderer #author-name {
+  font-size: var(--name-size);
+  font-weight: 800;
+  color: var(--name-color);
+}
+yt-live-chat-text-message-renderer[author-type="member"]    #author-name { color: var(--member-color); }
+yt-live-chat-text-message-renderer[author-type="moderator"] #author-name { color: var(--mod-color); }
+yt-live-chat-text-message-renderer[author-type="owner"]     #author-name { color: var(--owner-color); }
+
+/* role badges (member / mod / owner). Hidden here to keep it simple. */
+#chat-badges {
+  display: none;
+}
+
+/* the message text */
+yt-live-chat-text-message-renderer #message {
+  display: block;
+  font-size: var(--text-size);
+  font-weight: 600;
+  line-height: 1.35;
+}
+#message img.emoji {
+  width: 1.4em;
+  height: 1.4em;
+  vertical-align: -0.3em;
+}
+
+/* GIFs shown inside chat (when GIFs are set to appear in Chat) */
+#message img.bae-gif {
+  max-width: 100%;
+  height: var(--chatgif); /* follows "GIF size in chat" in the dock */
+  margin-top: 6px;
+  border-radius: 12px;
+}
+
+/* ---------------------------------------------------------------------
+   4. ONE PLATFORM ONLY (optional examples, remove the /* */ to use)
+   Every message also has the class platform-youtube, platform-twitch
+   or platform-tiktok.
+   --------------------------------------------------------------------- */
+/*
+.platform-twitch #content { border-left: 4px solid #9146ff; }
+.platform-tiktok #content { border-left: 4px solid #fe2c55; }
+*/
+
+/* ---------------------------------------------------------------------
+   5. SUPER CHATS
+   --------------------------------------------------------------------- */
+yt-live-chat-paid-message-renderer {
+  padding: 0 !important;
+  margin-bottom: var(--gap);
+  animation: bae-pop 0.35s ease-out both;
+}
+yt-live-chat-paid-message-renderer #card {
+  max-width: var(--bubble-max-width);
+  border-radius: var(--bubble-radius);
+  background: #ff6a13;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+yt-live-chat-paid-message-renderer #header {
+  padding: 10px 14px 6px;
+}
+yt-live-chat-paid-message-renderer #author-photo {
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  margin-right: 10px;
+}
+yt-live-chat-paid-message-renderer #author-name {
+  font-weight: 800;
+}
+yt-live-chat-paid-message-renderer #purchase-amount {
+  font-size: 18px;
+  font-weight: 800;
+}
+yt-live-chat-paid-message-renderer #content {
+  padding: 0 14px 12px;
+  font-size: var(--text-size);
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------
+   6. ANIMATION
+   In Custom CSS mode achat adds no animation of its own; this is it.
+   Delete the "animation:" lines above to have none at all.
+   --------------------------------------------------------------------- */
+@keyframes bae-pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}

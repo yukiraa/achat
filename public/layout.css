@@ -1,0 +1,45 @@
+/* full-screen layout editor: stage fills the window */
+html, body { height: 100%; }
+.editor { display: flex; flex-direction: column; height: 100vh; }
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border-bottom: 2px solid var(--ink);
+}
+.bar select { width: auto; margin: 0; }
+.bar .spacer { flex: 1; }
+.editor > .warnbox { margin: 10px 14px 0; }
+.work {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 14px;
+  padding: 14px;
+}
+.stagewrap { min-width: 0; min-height: 0; display: grid; place-items: center; }
+.work .stage {
+  --ar: 1.7778;
+  width: min(100%, calc((100vh - 110px) * var(--ar)));
+  max-height: calc(100vh - 110px);
+}
+#preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  background: transparent;
+  transform-origin: 0 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.inspector { align-self: start; display: flex; flex-direction: column; gap: 10px; }
+.inspector .nums { grid-template-columns: repeat(2, 1fr); margin: 0; }
+@media (max-width: 860px) {
+  .work { grid-template-columns: 1fr; }
+}
+.testdock { position: fixed; right: 16px; bottom: 16px; }

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>achat guide</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap">
+  <link rel="icon" href="/static/achat-logo-64.png">
+  <link rel="stylesheet" href="/static/guide.css?v={{BAE_VERSION}}">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-text">
+      <p class="brand"><img class="brandlogo" src="/static/achat-logo.png" alt=""> achat</p>
+      <h1>Your chat, on stream, the way you want it.</h1>
+      <p class="lede">One overlay for YouTube, Twitch and TikTok chat, with GIFs your viewers can send and polls they can vote in. Everything is set from a panel inside OBS.</p>
+      <a class="start" href="#start">Start setting up</a>
+    </div>
+    <div class="hero-chat" aria-hidden="true">
+      <div class="gcard"><span class="gav a1">M</span><div><b>mochi_bun</b><p>the new overlay is so cute</p></div><img class="glogo" src="/logos/youtube.png" alt=""></div>
+      <div class="gcard"><span class="gav a2">R</span><div><b>ren.exe</b><p>!vote 2</p></div><img class="glogo" src="/logos/twitch.png" alt=""></div>
+      <div class="gcard"><span class="gav a3">K</span><div><b>kiko</b><p>first time catching you live, hi!</p></div><img class="glogo" src="/logos/tiktok.png" alt=""></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <nav class="toc" aria-label="Guide sections">
+      <a href="#start">Getting started</a>
+      <a href="#connect">Connect your channels</a>
+      <a href="#layout">Arrange the layout</a>
+      <a href="#look">Style and themes</a>
+      <a href="#animation">Animation</a>
+      <a href="#gifs">GIFs</a>
+      <a href="#custom">Your own GIFs</a>
+      <a href="#polls">Polls</a>
+      <a href="#commands">Viewer commands</a>
+      <a href="#trouble">Troubleshooting</a>
+      <a href="#safety">Safety</a>
+    </nav>
+
+    <main class="doc">
+      <section id="start">
+        <h2>Getting started</h2>
+        <p>You need Windows, OBS Studio, and Node.js 20 or newer from nodejs.org (the LTS installer is fine).</p>
+        <ol class="steps">
+          <li><b>Start the app.</b> Unzip the achat folder somewhere permanent and double-click <code>start.bat</code>. The first run installs its packages. Keep the window open while you stream.</li>
+          <li><b>Add the overlay.</b> In OBS, add a Browser Source with <code>http://127.0.0.1:7788/overlay?layer=all</code>. Set its Width and Height to your layout canvas (1920 by 1080 unless you changed it; OBS starts new sources at 800 by 600, which makes everything small) and tick "Refresh browser when scene becomes active".</li>
+          <li><b>Add the control panel.</b> In OBS, open Docks, then Custom Browser Docks. Paste the dock link from the app window, the one containing <code>token=</code>. Treat that link like a password and keep it off stream.</li>
+          <li><b>Connect a channel</b> in the Connect section of the panel, then open the Test button in the bottom-right corner and run "Chat message" to see a card appear.</li>
+        </ol>
+      </section>
+
+      <section id="connect">
+        <h2>Connect your channels</h2>
+        <p>Type your channel in the box and press <b>Connect</b>. Once connected, the button becomes <b>Reconnect</b>: change the channel name and press it to switch, or use Disconnect.</p>
+        <p><b>YouTube</b> takes your @handle, channel ID or a video link. It checks every 30 seconds until you go live, and Reconnect checks right away. Members-only streams can't be read because they need a logged-in member.</p>
+        <p><b>Twitch</b> takes your channel name and connects instantly, no login needed.</p>
+        <p><b>TikTok</b> takes your username. TikTok has no official chat API, so it goes through a free signing service with rate limits; an Euler Stream key raises them.</p>
+        <p class="note">Each platform runs on its own. If one has trouble, the others keep going.</p>
+      </section>
+
+      <section id="layout">
+        <h2>Arrange the layout</h2>
+        <p>Layout only affects the "Everything" Browser Source; the single-part links always fill their own source. Open the full-screen editor from the Layout section for a big canvas with a live preview of your overlay behind the boxes. It shows three boxes: Chat, GIFs and Poll. GIFs fill the GIFs box; switch on "Also show GIFs inside chat" in the GIFs section if you want them in chat too. Drag a box to move it and drag any corner or side to resize it. Snap keeps boxes on the grid, and the minus and plus buttons change the grid size.</p>
+        <p>Select a box to type exact numbers, hide it, or lock it so it can't be moved by accident. Arrow keys nudge the selected box by one grid step, or five with Shift.</p>
+        <p>Pick "1080 by 1920 vertical" if you stream to TikTok in portrait. Your "Everything" Browser Source must use the same size as the canvas.</p>
+      </section>
+
+      <section id="look">
+        <h2>Style and themes</h2>
+        <p>In Style, choose <b>Template</b> or <b>Custom CSS</b>; only one can be on. Templates: Default (the only one whose colors you can edit), Dark, and four window templates with a mascot peeking over the corner: Kitty Window (pink, black cat), Bunny Note (lavender, white bunny), Matcha Leaf (green, frog) and Starlight (midnight blue, sleepy star). They give hosts, mods, VIPs and members/subs their own tag, and Super Chats turn the window gold. Animation settings are in Style too, and so is the look of this control panel (Light or Dark). You can also pick your own card background and border colors and set how see-through the cards are.</p>
+        <p><b>Edge fade</b> makes messages melt away near the top and bottom of the chat area. Set how far each fade reaches and how strong it is.</p>
+        <p><b>Platform logo</b> shows where a message came from, on the avatar's bottom-right corner or the card's top-right corner. Replace any logo with your own image.</p>
+        <p><b>Custom CSS</b> is its own theme. Pick "Custom CSS" in Style and the built-in look switches off; chat is then built with the same structure as YouTube's chat page, so CSS made for YouTube live chat works for all three platforms. On the Chat only link chat then fills the whole Browser Source like YouTube's chat popout; on the Everything link it sits in the Chat box from Layout. Every other Style setting switches off, except the edge fade and chat size. Platform logos are not shown in Custom CSS mode. Paste CSS or load a .css file (up to 3 MB), press Save, and keep as many presets as you like. New to CSS? Press "Start from the starter" in the editor, and read CUSTOM-CSS-GUIDE.md in your achat folder. For example:</p>
+        <pre><code>yt-live-chat-text-message-renderer #message { font-size: 22px; }
+yt-live-chat-text-message-renderer[author-type="member"] #author-name { color: #ff6a13; }</code></pre>
+      </section>
+
+      <section id="animation">
+        <h2>Animation</h2>
+        <p>Messages always arrive one at a time. Choose how each one enters: Slide up (the default), Speech bubble (the card puffs out of the avatar like a cloud, from a random side), Fade and slide, Cloud, Pop, or a slide from the left or right. When chat is busy, each message pauses for a readable moment; during a flood only the newest waiting messages are kept so the overlay never falls far behind.</p>
+      </section>
+
+      <section id="gifs">
+        <h2>GIFs</h2>
+        <p>Switch GIFs on or off in the GIFs section, then choose where they appear: <b>Chat</b> (as a message that scrolls with chat) or <b>Layout box</b> (the GIFs box from Layout, needs the "Everything" source). Viewers type <code>!gif happy cat</code>. To try it yourself, open the Test button, pick "Type like a viewer" and type <code>sample</code>, <code>!gif happy cat</code> or one of your own commands.</p>
+        <p><b>KLIPY</b> is the default provider. A new key allows 100 searches an hour; request a production key in the KLIPY dashboard for unlimited searches, then set the hourly limit to 0. Leave KLIPY's optional ads off; achat also drops ad results. <b>GIPHY</b> works too, with 100 searches an hour on a free key.</p>
+        <p>Every GIF passes a G rating, your blocked word list and cooldowns. Nothing is perfect, so "Remove last GIF" in the panel and <code>!skipgif</code> in chat take a GIF down everywhere at once.</p>
+      </section>
+
+      <section id="custom">
+        <h2>Your own GIFs</h2>
+        <p>In Custom GIFs, upload a GIF, PNG, WEBP or JPG (up to 8 MB) and give it a command like <code>x03</code>. Viewers type <code>!x03</code> and it shows wherever GIFs show. Custom commands share the GIF cooldowns but never use search limits.</p>
+      </section>
+
+      <section id="polls">
+        <h2>Polls</h2>
+        <p>Start a poll from the Polls section: a question, 2 to 6 options, and a length. Choose whether it appears at the top of chat or in the Poll box from Layout. Viewers vote with each option's command, <code>!vote1</code>, <code>!vote2</code> and so on by default; you can rename them, for example to <code>!yes</code> and <code>!no</code>. <code>!vote 1</code> with a space always works too. Each viewer has one vote and can change it until the poll ends. Live bars show in the Poll box, and the winner is highlighted at the end. Your mods can start one from chat with <code>!poll Question | Option A | Option B</code>.</p>
+      </section>
+
+      <section id="commands">
+        <h2>Viewer commands</h2>
+        <div class="table">
+          <table>
+            <thead><tr><th scope="col">Command</th><th scope="col">What it does</th><th scope="col">Who</th></tr></thead>
+            <tbody>
+              <tr><td><code>!gif words</code></td><td>Search and show a GIF</td><td>Everyone</td></tr>
+              <tr><td><code>!yourcommand</code></td><td>Show one of your own GIFs</td><td>Everyone</td></tr>
+              <tr><td><code>!vote2</code> (or your own)</td><td>Vote in the running poll</td><td>Everyone</td></tr>
+              <tr><td><code>!skipgif</code></td><td>Remove the newest GIF</td><td>You and mods</td></tr>
+              <tr><td><code>!poll Q | A | B</code></td><td>Start a poll</td><td>You and mods</td></tr>
+              <tr><td><code>!endpoll</code></td><td>Close the poll now</td><td>You and mods</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="trouble">
+        <h2>Troubleshooting</h2>
+        <h3>YouTube says "Not live yet"</h3>
+        <p>First check that the channel is live on YouTube itself; many streamers are live only on Twitch. Press Reconnect to check right away, and look at the Log for what each check found. Pasting the stream's video link skips detection entirely.</p>
+        <h3>Test GIF does nothing</h3>
+        <p>The Test button's "GIF" uses a built-in sample, so it works without a key. If that shows but viewer GIFs don't, check your KLIPY or GIPHY key; the GIFs section shows the result of the last request.</p>
+        <h3>Animations stutter in OBS</h3>
+        <p>In OBS Settings, Advanced, turn on "Enable Browser Source Hardware Acceleration" and restart OBS. In the Browser Source properties, tick "Use custom frame rate" and set 60.</p>
+        <h3>Changes don't appear</h3>
+        <p>After updating the app, right-click the Browser Source and choose Refresh, and close and reopen the dock.</p>
+      </section>
+
+      <section id="safety">
+        <h2>Safety</h2>
+        <p>Chat is always shown as plain text, never as code, so a crafted message can't run anything in OBS. Viewers can't post links or images; pictures come only from the platforms' own servers, GIF providers, or files you uploaded. The app only listens on your own PC, and the panel needs your private token. Keep OBS updated too.</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

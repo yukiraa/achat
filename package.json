@@ -1,0 +1,14 @@
+{
+  "name": "achat",
+  "version": "1.0.0",
+  "description": "achat: multi-platform interactive chat overlay for OBS (YouTube, Twitch, TikTok)",
+  "type": "module",
+  "main": "server/index.js",
+  "private": true,
+  "engines": { "node": ">=20.0.0" },
+  "scripts": { "start": "node server/index.js", "test": "node --test test/unit.test.js" },
+  "dependencies": {
+    "tiktok-live-connector": "2.5.0",
+    "ws": "8.22.0"
+  }
+}
